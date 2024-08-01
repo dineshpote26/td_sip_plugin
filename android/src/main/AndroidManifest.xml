@@ -11,7 +11,7 @@
             android:windowSoftInputMode="adjustResize" >
         </activity>
 
-        <service android:name=".sip_tru.SipTruMiniManager" />
+        <service android:name=".sip_tru.SipTruMiniManager" android:exported="true" />
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />

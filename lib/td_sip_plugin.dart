@@ -33,6 +33,8 @@ abstract class TdSipObserver {
 
   /// 收到呼叫（"sipID">呼叫方的sipID）
   void tdSipDidReceiveCallForID(String sipID) {}
+
+  void onCallStateChanged(String state) {}
 }
 
 class TdSipPlugin {
@@ -80,6 +82,11 @@ class TdSipPlugin {
         case "streamsDidBeginRunning":
           _observerList.forEach((TdSipObserver observer) {
             observer.tdSipStreamsDidBeginRunning();
+          });
+          break;
+        case "callState":
+          _observerList.forEach((TdSipObserver observer) {
+            observer.onCallStateChanged(map["state"]);
           });
           break;
       }

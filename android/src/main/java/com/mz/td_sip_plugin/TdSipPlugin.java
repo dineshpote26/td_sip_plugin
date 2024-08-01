@@ -1,10 +1,12 @@
 package com.mz.td_sip_plugin;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.WindowManager;
@@ -39,6 +41,10 @@ public class TdSipPlugin extends BroadcastReceiver implements FlutterPlugin, Met
     private EventChannel.EventSink mEvents;
     private Activity mActivity;
 
+    int RECEIVER_EXPORTED = 0x2; // Context.RECEIVER_EXPORTED
+    int RECEIVER_NOT_EXPORTED = 0x1; // Context.RECEIVER_NOT_EXPORTED
+
+    @SuppressLint("WrongConstant")
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
         methodChannel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), "td_sip_plugin");
@@ -52,7 +58,12 @@ public class TdSipPlugin extends BroadcastReceiver implements FlutterPlugin, Met
         Context application = flutterPluginBinding.getApplicationContext();
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("com.mz.td_sip_plugin_init_success");
-        application.registerReceiver(this, intentFilter);
+        //application.registerReceiver(this, intentFilter);
+        if (Build.VERSION.SDK_INT >= 33) {
+            application.registerReceiver(this, intentFilter, RECEIVER_EXPORTED);
+        } else {
+            application.registerReceiver(this, intentFilter);
+        }
 
         final Intent i = new Intent(application, SipTruMiniManager.class);
         application.startService(i);
@@ -198,6 +209,9 @@ public class TdSipPlugin extends BroadcastReceiver implements FlutterPlugin, Met
                 case "streamsRunning":
                     map.put("eventName", "streamsDidBeginRunning");
                     break;
+                case "callState":
+                    map.put("eventName", "callState");
+                    map.put("state", sipID);
             }
             Handler handler = new Handler(Looper.getMainLooper());
             handler.post(new Runnable() {

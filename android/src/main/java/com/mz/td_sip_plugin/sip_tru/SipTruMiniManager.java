@@ -341,6 +341,9 @@ public class SipTruMiniManager extends Service implements CoreListener {
         if (TextUtils.isEmpty(mCurrentAddress)) {
             mCurrentAddress = call.getRemoteAddressAsString();
         }
+        if (mSipPlugin != null) {
+            mSipPlugin.callStatusUpdate("callState", stateStr);
+        }
         if (state == Call.State.IncomingReceived || state == Call.State.IncomingEarlyMedia) {
             call.enableCamera(false);
             if (!TextUtils.isEmpty(mCurrentAddress) && !call.getRemoteAddressAsString().equalsIgnoreCase(mCurrentAddress)) {

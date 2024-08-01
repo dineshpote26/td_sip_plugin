@@ -238,7 +238,7 @@ class _SipPageState extends State<SipPage> with TdSipObserver {
 
   @override
   Widget build(BuildContext context) {
-    print(ModalRoute.of(context).settings.arguments);
+    print(ModalRoute.of(context)?.settings.arguments);
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       body: Container(
